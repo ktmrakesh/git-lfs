@@ -289,10 +289,6 @@ clone_repo_clientcert() {
   set -e
 
   echo "$out" > clone_client_cert.log
-  if [ $(grep -c "NSInvalidArgumentException" clone_client_cert.log) -gt 0 ]; then
-    echo "client-cert-mac-openssl"
-  fi
-
   if [ "0" -eq "$res" ]; then
     cd "$dir"
 
@@ -300,6 +296,12 @@ clone_repo_clientcert() {
     exit 0
   fi
 
+  if [ $(grep -c "NSInvalidArgumentException" clone_client_cert.log) -gt 0 ]; then
+    echo "client-cert-mac-openssl"
+    exit 0
+  fi
+
+  exit 1
 }
 
 # setup_remote_repo_with_file creates a remote repo, clones it locally, commits
