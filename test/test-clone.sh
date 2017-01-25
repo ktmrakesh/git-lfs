@@ -144,14 +144,12 @@ begin_test "clone ClientCert"
   set -e
   reponame="test-cloneClientCert"
   setup_remote_repo "$reponame"
-  pwd
-  out="$(clone_repo_clientcert "$reponame" "$reponame")"
-  if [ $(echo "$out" | grep -c "client-cert-mac-openssl") -gt 0 ]; then
+  clone_repo_clientcert "$reponame" "$reponame"
+  if [ $(grep -c "client-cert-mac-openssl" clone_client_cert.log) -gt 0 ]; then
     echo "Skipping due to SSL client cert bug in Git"
     exit 0
   fi
 
-  pwd
   git lfs track "*.dat" 2>&1 | tee track.log
   grep "Tracking \*.dat" track.log
 

@@ -288,16 +288,17 @@ clone_repo_clientcert() {
   res="${PIPESTATUS[0]}"
   set -e
 
-  echo "$out" > clone_client_cert.log
   if [ "0" -eq "$res" ]; then
     cd "$dir"
+    echo "$out" > clone_client_cert.log
 
     git config credential.helper lfstest
     exit 0
   fi
 
+  echo "$out" > clone_client_cert.log
   if [ $(grep -c "NSInvalidArgumentException" clone_client_cert.log) -gt 0 ]; then
-    echo "client-cert-mac-openssl"
+    echo "client-cert-mac-openssl" > clone_client_cert.log
     exit 0
   fi
 
