@@ -283,14 +283,23 @@ clone_repo_clientcert() {
   local reponame="$1"
   local dir="$2"
   echo "clone $CLIENTCERTGITSERVER/$reponame to $dir"
+  set +e
   out=$(git clone "$CLIENTCERTGITSERVER/$reponame" "$dir" 2>&1)
-  cd "$dir"
-
-  git config credential.helper lfstest
-#todo setup client cert...
+  res="${PIPESTATUS[0]}"
+  set -e
 
   echo "$out" > clone_client_cert.log
-  echo "$out"
+  if [ $(grep -c "NSInvalidArgumentException" clone_client_cert.log) -gt 0 ]; then
+    echo "client-cert-mac-openssl"
+  fi
+
+  if [ "0" -eq "$res" ]; then
+    cd "$dir"
+
+    git config credential.helper lfstest
+    exit 0
+  fi
+
 }
 
 # setup_remote_repo_with_file creates a remote repo, clones it locally, commits
